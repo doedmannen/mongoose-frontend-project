@@ -58,6 +58,35 @@ class SuperMongo{
 
 	/*
 	 *
+	 * Removes the object from mongodb and sets the frontend value to null
+	 *
+	 * */
+
+	async remove(o){
+		let r, method = 'DELETE', url;
+		
+		if(this.validObject(o) && o._id){
+			url = `${window.location.origin}/api/${this.constructor.name}/${o._id}`	
+		} else if(this._id){
+			url = `${window.location.origin}/api/${this.constructor.name}/${this._id}` 
+		} else {
+			this = null; 
+		}
+
+		if(url){
+			r = await fetch(url, { method });
+			try{
+				r.json();
+				if(r.successful){
+					this = null;
+				}
+			}catch(err){}
+		}
+	}
+
+
+	/*
+	 *
 	 * Sends a query to backend requesting an array of objects to be returned 
 	 * 
 	 * */

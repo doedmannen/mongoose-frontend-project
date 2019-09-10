@@ -1,0 +1,7 @@
+handle array of objects 
+saveAll(); 
+deleteAll();
+refreshAll();
+
+Lägg även till refresh(); 
+

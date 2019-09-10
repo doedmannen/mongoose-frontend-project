@@ -192,7 +192,7 @@ app.put('/api/:collection/:id', async (req, res) => {
 
 /*
  *
- * Not used on frontend
+ * Takes ObjectId and removes one object with that ObjectId 
  *
  * */
 app.delete('/api/:collection/:id', async (req, res) => {
