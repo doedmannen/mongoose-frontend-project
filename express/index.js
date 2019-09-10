@@ -44,8 +44,8 @@ const PORT = 3333;
  * 
  * */
 const collectionMap = {
-	person: require('./Person'),
-	kitten: require('./Kitten')
+	person: require('./schema/Person'),
+	kitten: require('./schema/Kitten')
 }
 
 /*
