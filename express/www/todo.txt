@@ -5,3 +5,8 @@ refreshAll();
 
 Lägg även till refresh(); 
 
+
+
+
+Frontend återupplivar inte objekt från populate 
+Behöver flagga det...
