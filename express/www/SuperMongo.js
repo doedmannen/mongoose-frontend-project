@@ -5,7 +5,6 @@ class SuperMongo{
 	 * Constructor runs assign
 	 * 
 	 * */
-	
 	constructor(copy){
 		if(!!copy && copy instanceof Object && !Array.isArray(copy)){
 			Object.assign(this, copy);
@@ -17,7 +16,6 @@ class SuperMongo{
 	 * Check if an input object is a valid object
 	 * 
 	 * */
-	
 	static validObject(o){
 		return o instanceof Object && o !== null && !Array.isArray(o);
 	}
@@ -29,7 +27,6 @@ class SuperMongo{
 	 * or update old
 	 *
 	 * */
-
 	async save(){
 		let r, url, method;
 		url = `${window.location.origin}/api/${this.constructor.name}`
@@ -50,8 +47,6 @@ class SuperMongo{
 			if(r.status === 500){
 				r = r.json();
 				throw(r.error)
-			} else {
-				throw("Somethings fucky"); 
 			}
 		}
 	}
@@ -61,13 +56,9 @@ class SuperMongo{
 	 * Removes the object from mongodb and sets the frontend value to null
 	 *
 	 * */
-
-	async remove(o){
+	async delete(){
 		let r, method = 'DELETE', url;
-		
-		if(this.validObject(o) && o._id){
-			url = `${window.location.origin}/api/${this.constructor.name}/${o._id}`	
-		} else if(this._id){
+		if(this._id){
 			url = `${window.location.origin}/api/${this.constructor.name}/${this._id}` 
 		} else {
 			this = null; 
@@ -90,7 +81,6 @@ class SuperMongo{
 	 * Sends a query to backend requesting an array of objects to be returned 
 	 * 
 	 * */
-
 	static async find(o, e){
 		let query = this.validObject(o) ? o : {}, extra = this.validObject(e) ? e : {}, arrayOfObjects = null, baseUrl = `${window.location.origin}/api/${this.name}`, parsedArrayOfObjects = [];
 		
@@ -103,8 +93,7 @@ class SuperMongo{
 
 		if(Array.isArray(arrayOfObjects)){
 			for(let ob of arrayOfObjects){
-				let instance = new this();
-				Object.assign(instance, ob);
+				let instance = new this(ob);
 				parsedArrayOfObjects.push(instance);
 			}
 		}
@@ -117,7 +106,6 @@ class SuperMongo{
 	 * Sends a query to backend requesting one object to be returned
 	 *
 	 * */
-
 	static async findOne(o, e){
 		let query = this.validObject(o) ? o : {}, extra = this.validObject(e) ? e : {}, instance = null, instanceFromDb = null, baseUrl = `${window.location.origin}/api/${this.name}`;
 		
@@ -127,11 +115,31 @@ class SuperMongo{
 		instanceFromDb = instanceFromDb.status === 200 ? await instanceFromDb.json() : null;
 			
 		if(this.validObject(instanceFromDb)){
-			instance = new this();
-			Object.assign(instance, instanceFromDb);
+			instance = new this(instanceFromDb);
 		}
 	
 		return instance; 		
+	}
+
+
+	/*
+	 *
+	 * Static method for deleting one object or a list of objects 
+	 * Acts destructive on the frontend object and sets collection to 
+	 * empty if all objects are deleted 
+	 *
+	 * */
+	static async deleteAll(c){
+		if(Array.isArray(c)){
+			for(let i = 0; i < c.length; i++){
+				if(c[i] instanceof SuperMongo){
+					c[i].delete();
+				}
+			}
+		} else if (this.validObject(c) && c instanceof SuperMongo){
+			c.delete();
+		}
+		c = c.filter(o => o !== null);
 	}
 }
 
